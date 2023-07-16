@@ -18,8 +18,6 @@ class Statamic extends Plugin implements Deployable, Installable
 {
     use CanBeDeployed, CanBeInstalled;
 
-    protected bool $gitAutoCommit = false;
-
     public function install(): ?InstallationResult
     {
         $userRepository = Console::choice(
