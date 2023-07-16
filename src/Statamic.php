@@ -18,15 +18,7 @@ class Statamic extends Plugin implements Deployable, Installable
 {
     use CanBeDeployed, CanBeInstalled;
 
-    protected bool $gitEnabled = false;
-
     protected bool $gitAutoCommit = false;
-
-    protected bool $gitAutoPush = false;
-
-    protected ?string $gitEmail = null;
-
-    protected ?string $gitUsername = null;
 
     public function install(): ?InstallationResult
     {
@@ -65,10 +57,10 @@ class Statamic extends Plugin implements Deployable, Installable
         return DeploymentResult::create()
             ->environmentVariables($envVars)
             ->updateDeployScript(
-                function () {
+                function () use ($envVars) {
                     DeployScript::addAfterGitPull('php please cache:clear');
 
-                    if ($this->gitAutoCommit) {
+                    if ($envVars['STATAMIC_GIT_AUTOMATIC'] ?? false) {
                         DeployScript::addAtBeginning(
                             <<<'SCRIPT'
                             if [[ $FORGE_DEPLOY_MESSAGE =~ "[BOT]" ]]; then
